@@ -17,11 +17,11 @@
 
     <div class="price-filter">Цена, &#8381;</div>
     <div class="price-enter">
-      <input type="text" placeholder="Цена от" />
-      <input type="text" placeholder="до, руб." />
+      <input id="fromInput" v-model="from" type="text" placeholder="Цена от" />
+      <input id="toInput" v-model="to" type="text" placeholder="до, руб." />
     </div>
     <div @click="resetFilters" class="reset-filters">сбросить фильтры</div>
-    <button class="btn-filter">
+    <button @click="setRange" class="btn-filter">
       <span>Показать</span>
     </button>
   </div>
@@ -31,7 +31,9 @@
 export default {
   data() {
     return {
-      isSortedByPopularity: true
+      isSortedByPopularity: true,
+      from: "",
+      to: ""
     };
   },
   methods: {
@@ -39,10 +41,28 @@ export default {
       this.isSortedByPopularity = type === "id" ? true : false;
       this.$eventHub.$emit("filterChanged", type);
     },
-    resetFilters(){
-        // this.changeSortType('id');
-        this.$eventHub.$emit('resetFilter')
-        this.isSortedByPopularity = true;
+    setRange() {
+      if (this.from && this.to
+         && parseInt(this.from) <= parseInt(this.to) 
+         && parseInt(this.from) >= 0 && parseInt(this.to) > 0) {
+        this.$eventHub.$emit("filterChanged", "range", this.from, this.to);
+        document.getElementById("fromInput").style.border = "1px solid black";
+        document.getElementById("toInput").style.border = "1px solid black";
+      } else if (!this.from && this.to) {
+        document.getElementById("fromInput").style.border = "1px solid red";
+        document.getElementById("toInput").style.border = "1px solid black";
+      } else if (!this.to && this.from) {
+        document.getElementById("toInput").style.border = "1px solid red";
+        document.getElementById("fromInput").style.border = "1px solid black";
+      } else {
+        document.getElementById("fromInput").style.border = "1px solid red";
+        document.getElementById("toInput").style.border = "1px solid red";
+      }
+    },
+    resetFilters() {
+      this.from = this.to = "";
+      this.$eventHub.$emit("resetFilter");
+      this.isSortedByPopularity = true;
     }
   }
 };

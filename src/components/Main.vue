@@ -25,13 +25,14 @@ export default {
     return {
       itemList: [],
       constantList: [],
-      filter: a=>a,
+      filter: a => a,
       currentCategory: "",
-      sorter:(a,b) => a.id- b.id
+      sorter: (a, b) => a.id - b.id,
+      rangeFilter:a=>a
     };
   },
   methods: {
-    onFilterChanged(type) {
+    onFilterChanged(type, from, to) {
       switch (type) {
         case "id":
           this.sorter = (a, b) => a.id - b.id;
@@ -39,14 +40,17 @@ export default {
         case "price":
           this.sorter = (a, b) => a.price - b.price;
           break;
+        case "range":
+          this.rangeFilter = a => a.price >= from && a.price <= to;
+          this.itemList = this.constantList.filter(this.rangeFilter);
+          break;
         default:
           this.currentCategory = type;
           this.filter = a => a.category === type;
-          this.itemList = this.constantList.filter(this.filter);
+          this.itemList = this.constantList.filter(this.filter).filter(this.rangeFilter);
           break;
       }
-        console.log(this.filter)
-        this.itemList = this.itemList
+      this.itemList = this.itemList
         .filter(a => Number.isInteger(a.price))
         .sort(this.sorter)
         .concat(
@@ -60,11 +64,11 @@ export default {
           })
         );
     },
-    resetFilter(){
-        this.sorter = (a,b) => a.id- b.id
-        this.filter = a=>a
-        this.currentCategory = ""
-        this.itemList = this.constantList;
+    resetFilter() {
+      this.sorter = (a, b) => a.id - b.id;
+      this.filter = a => a;
+      this.currentCategory = "";
+      this.itemList = this.constantList;
     }
   },
   mounted() {
@@ -73,10 +77,10 @@ export default {
       this.constantList = this.itemList;
     });
     this.$eventHub.$on("filterChanged", this.onFilterChanged);
-    this.$eventHub.$on('resetFilter',this.resetFilter)
+    this.$eventHub.$on("resetFilter", this.resetFilter);
   },
   beforeDestroy() {
-      this.$eventHub.$off('resetFilter',this.resetFilter)
+    this.$eventHub.$off("resetFilter", this.resetFilter);
     this.$eventHub.$off("filterChanged", this.onFilterChanged);
   }
 };
