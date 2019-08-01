@@ -48,7 +48,6 @@ export default {
             let ids = localStorage
                         .getItem('favourites')
                         .split('')
-                        .map(a => (a))
 
             this.filter = a => ids.includes(a.id)
             this.currentCategory = "favourites"

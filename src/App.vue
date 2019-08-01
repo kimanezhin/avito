@@ -1,9 +1,16 @@
 <template>
   <div id="app">
-    <router-view/>
+    <Home/>
   </div>
 </template>
-
+<script>
+import Home from './views/Home'
+export default {
+  components:{
+    Home
+  }
+}
+</script>
 <style>
 *{
   font-family: 'Avenir', Helvetica, Arial, sans-serif;

@@ -1,12 +1,22 @@
 <template>
   <div>
     <div class="shop-card" @mouseover="changeOpacity(0.5)" @mouseleave="changeOpacity(0)">
+      
       <img
+        v-if="!isFavourite"
         title="Добавить в избранное"
         :name="itemid"
         @click="addToFavourites"
         class="favourite"
         src="../assets/star_77949.svg"
+      />
+      <img
+      v-else
+      title="Удалить из избранного"
+      :name="itemid"
+      @click="removeFromFavourites"
+      class="favourite"
+      src="../assets/cross.svg"
       />
       <div class="container">
         <img class="ad-photo" :src="pictures[0]" />
@@ -56,15 +66,30 @@ export default {
       this.sellerName = response.data.data.name;
       this.sellerRate = response.data.data.rating;
     });
+    this.isFavourite = localStorage
+                              .getItem('favourites')
+                              .split('')
+                              .includes(this.itemid+"")
   },
   methods: {
     changeOpacity(op) {
       document.getElementsByName(this.itemid)[0].style.opacity = op;
     },
     addToFavourites() {
+      this.isFavourite = true;
       let cur = localStorage.getItem('favourites')
       cur+=this.itemid;
       localStorage.setItem('favourites', cur);
+    },
+    removeFromFavourites(){
+      this.isFavourite = false;
+      let cur = localStorage.getItem('favourites')
+      cur = cur
+      .split('')
+      .filter(x=>parseInt(x)!==this.itemid)
+      .join('')
+      localStorage.setItem('favourites',cur);
+      // this.$eventHub.$emit("filterChanged", "favourites");
     },
     priceMaker(price) {
       if (!Number.isInteger(parseInt(price))) return "Не указано";
@@ -83,9 +108,10 @@ export default {
   data() {
     return {
       sellerName: "",
-      sellerRate: 0
+      sellerRate: 0,
+      isFavourite:false
     };
-  }
+  },
 };
 </script>
 
