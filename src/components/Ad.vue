@@ -1,20 +1,25 @@
 <template>
   <div>
-    <div class="shop-card" @mouseover="showIcon">
-        <img  class="favourite" src="../assets/star_77949.svg" />
+    <div class="shop-card" @mouseover="changeOpacity(0.5)" @mouseleave="changeOpacity(0)">
+      <img
+        title="Добавить в избранное"
+        :name="itemid"
+        @click="addToFavourites"
+        class="favourite"
+        src="../assets/star_77949.svg"
+      />
       <div class="container">
-          <img class="ad-photo" src="../assets/839507322.jpg" />
-          <div class="counter">6</div>
+        <img class="ad-photo" :src="pictures[0]" />
+        <div class="counter">{{pictures.length}}</div>
       </div>
 
-      <div class="title">Платье</div>
-      <div class="price">1000 &#8381;</div>
+      <div class="title">{{title}}</div>
+      <div class="price">{{price ? priceMaker(price): "Не указано"}}</div>
       <div class="seller">
-        <div class="seller-name">Иван Пупкин</div>
+        <div class="seller-name">{{sellerName}}</div>
 
-        <div class="rate">
-          <img src="../assets/star_77949.svg" />
-          <img src="../assets/star_77949.svg" />
+        <div class="rate seller-name">
+          {{sellerRate}}
           <img src="../assets/star_77949.svg" />
         </div>
       </div>
@@ -23,18 +28,66 @@
 </template>
 
 <script>
+import Axios from "axios";
 export default {
-    methods: {
-        showIcon(){
-            document.getElementsByClassName('favourite')[0].style.opacity="0.5";
-        }
+  props: {
+    itemid: {
+      type: Number,
+      default: 0
     },
+    title: {
+      type: String,
+      default: ""
+    },
+    price: {
+      type: String,
+      default: "Не указано"
+    },
+    sellerid: {
+      type: Number,
+      default: 0
+    },
+    pictures: {
+      type: Array
+    }
+  },
+  mounted() {
+    Axios.get(this.$sellers + "/" + this.sellerid).then(response => {
+      this.sellerName = response.data.data.name;
+      this.sellerRate = response.data.data.rating;
+    });
+  },
+  methods: {
+    changeOpacity(op) {
+      document.getElementsByName(this.itemid)[0].style.opacity = op;
+    },
+    addToFavourites() {},
+    priceMaker(price) {
+      if (!Number.isInteger(parseInt(price))) return "Не указано";
+      price = price
+        .split("")
+        .reverse()
+        .map((V, I) => {
+          if (I % 3 == 0) V = V + " ";
+          return V;
+        })
+        .reverse()
+        .join("");
+      return price + " " + "\u20BD";
+    }
+  },
+  data() {
+    return {
+      sellerName: "",
+      sellerRate: 0
+    };
+  }
 };
 </script>
 
 <style scoped>
 .shop-card {
-    position: relative;
+  position: relative;
   width: 350px;
   /* height: 350px; */
   background: #f5f5f5;
@@ -46,18 +99,18 @@ export default {
   flex-direction: column;
 }
 
-.favourite{
-    position: absolute;
-    top:5%;
-    left: 5%;
-    height: 30px;
-    z-index: 3;
-    opacity: 0;
+.favourite {
+  position: absolute;
+  top: 5%;
+  left: 5%;
+  height: 30px;
+  z-index: 3;
+  opacity: 0;
 }
 
-.favourite:hover{
-    opacity: 1;
-    cursor: pointer;
+.favourite:hover {
+  opacity: 1 !important;
+  cursor: pointer;
 }
 
 .big-title {
@@ -74,14 +127,14 @@ export default {
   padding: 10px;
   color: #0091d9;
 }
-.title:hover{
-    color: red;
-    cursor: pointer;
+.title:hover {
+  color: red;
+  cursor: pointer;
 }
 
 .title,
-.price{
-   font-weight: 600;
+.price {
+  font-weight: 600;
   font-size: 20px;
 }
 .price {
@@ -92,35 +145,33 @@ export default {
   padding: 10px;
   font-size: 18px;
   color: #999;
-
 }
-.rate{
-    display: flex;
-    align-items: center;
+.rate {
+  display: flex;
 }
 
-.rate > img{
-    height: 20px;
+.rate > img {
+  height: 18px;
+  margin-left: 3px;
 }
 
-.seller{
-    display: flex;
+.seller {
+  display: flex;
 }
 
-.counter{
-    position: absolute;
-   bottom: 5%;
-   right: 5%;
-   background: rgba(0, 0, 0, 0.377);
-   height: 25px;
-   width: 25px;
-   text-align: center;
-   line-height: 1.5;
-   border-radius: 50px;
-   color: white;
-
+.counter {
+  position: absolute;
+  bottom: 5%;
+  right: 5%;
+  background: rgba(0, 0, 0, 0.377);
+  height: 25px;
+  width: 25px;
+  text-align: center;
+  line-height: 1.5;
+  border-radius: 50px;
+  color: white;
 }
-.container{
-    position: relative;
+.container {
+  position: relative;
 }
 </style>
