@@ -61,7 +61,11 @@ export default {
     changeOpacity(op) {
       document.getElementsByName(this.itemid)[0].style.opacity = op;
     },
-    addToFavourites() {},
+    addToFavourites() {
+      let cur = localStorage.getItem('favourites')
+      cur+=this.itemid;
+      localStorage.setItem('favourites', cur);
+    },
     priceMaker(price) {
       if (!Number.isInteger(parseInt(price))) return "Не указано";
       price = price

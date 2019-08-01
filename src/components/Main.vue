@@ -44,6 +44,17 @@ export default {
           this.rangeFilter = a => a.price >= from && a.price <= to;
           this.itemList = this.constantList.filter(this.rangeFilter);
           break;
+        case "favourites":
+            let ids = localStorage
+                        .getItem('favourites')
+                        .split('')
+                        .map(a => (a))
+
+            this.filter = a => ids.includes(a.id)
+            this.currentCategory = "favourites"
+            this.itemList = this.constantList.filter(this.filter)
+            this.itemList
+            break;
         default:
           this.currentCategory = type;
           this.filter = a => a.category === type;
