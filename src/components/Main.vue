@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 80%;">
+  <div class = "inner-table">
     <div class="empty-screen" v-if="isEmpty">К сожалению, здесь пока пусто:(</div>
     <transition-group v-else class="table" name="cards">
       <Ad
@@ -127,6 +127,7 @@ export default {
   flex-direction: row;
   overflow: none;
   flex-wrap: wrap;
+  justify-content: center;
 }
 
 .cards-enter,
@@ -149,5 +150,11 @@ export default {
   text-align: center;
   font-weight: 600;
   line-height: 10;
+}
+
+.inner-table{
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
 }
 </style>

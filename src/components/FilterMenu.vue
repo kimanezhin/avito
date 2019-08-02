@@ -144,7 +144,7 @@ body {
     #right-panel{
         height: 200px;
         padding: 0;
-        width: 100%;
+        width: 80%;
         margin-left: auto;
         margin-right: auto;
     }
