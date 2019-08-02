@@ -26,22 +26,24 @@ export default {
     return {
       itemList: [],
       constantList: [],
-      sellers:new Map,
+      sellers: new Map(),
       filter: a => a,
       currentCategory: "",
       sorter: (a, b) => a.id - b.id,
-      rangeFilter:a=>a
+      rangeFilter: a => a
     };
   },
   methods: {
     onFilterChanged(type, from, to) {
       switch (type) {
-        case "id":      
+        case "id":
           this.sorter = (a, b) => {
-             return  this.sellers.get(parseInt(a.relationships.seller)).rate - 
-                     this.sellers.get(parseInt(b.relationships.seller)).rate 
-          }
-          this.itemList = this.itemList.sort(this.sorter)
+            return (
+              this.sellers.get(parseInt(a.relationships.seller)).rate -
+              this.sellers.get(parseInt(b.relationships.seller)).rate
+            );
+          };
+          this.itemList = this.itemList.sort(this.sorter);
           return;
         case "price":
           this.sorter = (a, b) => a.price - b.price;
@@ -51,18 +53,18 @@ export default {
           this.itemList = this.constantList.filter(this.rangeFilter);
           break;
         case "favourites":
-            let ids = localStorage
-                        .getItem('favourites')
-                        .split('')
+          let ids = localStorage.getItem("favourites").split("");
 
-            this.filter = a => ids.includes(a.id)
-            this.currentCategory = "favourites"
-            this.itemList = this.constantList.filter(this.filter)
-            break;
+          this.filter = a => ids.includes(a.id);
+          this.currentCategory = "favourites";
+          this.itemList = this.constantList.filter(this.filter);
+          break;
         default:
           this.currentCategory = type;
           this.filter = a => a.category === type;
-          this.itemList = this.constantList.filter(this.filter).filter(this.rangeFilter);
+          this.itemList = this.constantList
+            .filter(this.filter)
+            .filter(this.rangeFilter);
           break;
       }
       this.itemList = this.itemList
@@ -83,23 +85,29 @@ export default {
       this.sorter = (a, b) => a.id - b.id;
       this.filter = a => a;
       this.currentCategory = "";
-      this.itemList = this.itemList.sort((a,b) => a.id - b.id)
+      this.itemList = this.constantList.sort((a, b) => a.id - b.id);
     },
-    addSeller(seller){
-        this.sellers.set(seller.id,seller)
+    addSeller(seller) {
+      this.sellers.set(seller.id, seller);
+    },
+    favouriteChecker() {
+        if(this.currentCategory !== "favourites")
+            return;
+        this.onFilterChanged('favourites')
     }
   },
   mounted() {
-    Axios
-    .get(this.$products)
-    .then(response => {
+    Axios.get(this.$products).then(response => {
       this.itemList = response.data.data;
-      this.constantList = this.itemList;})
-    
+      this.constantList = this.itemList;
+    });
+
     this.$eventHub.$on("filterChanged", this.onFilterChanged);
     this.$eventHub.$on("resetFilter", this.resetFilter);
+    this.$eventHub.$on("favouritesChanged", this.favouriteChecker);
   },
   beforeDestroy() {
+    this.$eventHub.$on("favouritesChanged", this.favouriteChecker);
     this.$eventHub.$off("resetFilter", this.resetFilter);
     this.$eventHub.$off("filterChanged", this.onFilterChanged);
   }

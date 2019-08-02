@@ -94,7 +94,7 @@ export default {
       .filter(x=>parseInt(x)!==this.itemid)
       .join('')
       localStorage.setItem('favourites',cur);
-      // this.$eventHub.$emit("filterChanged", "favourites");
+      this.$eventHub.$emit('favouritesChanged')
     },
     priceMaker(price) {
       if (!Number.isInteger(parseInt(price))) return "Не указано";
