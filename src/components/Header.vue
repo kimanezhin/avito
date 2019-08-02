@@ -1,41 +1,72 @@
 <template>
   <header>
-    <img  @click="refresh" src="../assets/avito.svg" title="Avito" class="logo" />
+    <img @click="refresh" src="../assets/avito.svg" title="Avito" class="logo" />
     <div class="header_links">
-      <div class="header_link" :class="{chosenLink:currentFilter === 'immovable'}" @click="changeFilter('immovable')">Недвижимость</div>
-      <div class="header_link" :class="{chosenLink:currentFilter === 'cameras'}" @click="changeFilter('cameras')">Фотоаппараты</div>
-      <div class="header_link" :class="{chosenLink:currentFilter === 'auto'}" @click="changeFilter('auto')">Автомобили</div>
-      <div class="header_link" :class="{chosenLink:currentFilter === 'laptops'}" @click="changeFilter('laptops')">Ноутбуки</div>
-      <div class="header_link" :class="{chosenLink:currentFilter === 'favourites'}" @click="changeFilter('favourites')">Избранное</div>
+      <div
+        class="header_link"
+        :class="{chosenLink:currentFilter === 'immovable'}"
+        @click="changeFilter('immovable')"
+      >Недвижимость</div>
+      <div
+        class="header_link"
+        :class="{chosenLink:currentFilter === 'cameras'}"
+        @click="changeFilter('cameras')"
+      >Фотоаппараты</div>
+      <div
+        class="header_link"
+        :class="{chosenLink:currentFilter === 'auto'}"
+        @click="changeFilter('auto')"
+      >Автомобили</div>
+      <div
+        class="header_link"
+        :class="{chosenLink:currentFilter === 'laptops'}"
+        @click="changeFilter('laptops')"
+      >Ноутбуки</div>
+      <div
+        class="header_link"
+        :class="{chosenLink:currentFilter === 'favourites'}"
+        @click="changeFilter('favourites')"
+      >Избранное</div>
     </div>
   </header>
 </template>
 
 <script>
 export default {
-    data() {
-        return {
-            currentFilter:''
-        }
-    },
-    mounted() {
-        this.$eventHub.$on('resetFilter',this.resetFilter)
-    },
-    beforeDestroy() {
-        this.$eventHub.$off('resetFilter', this.resetFilter)
-    },
+  data() {
+    return {
+      currentFilter: ""
+    };
+  },
+  mounted() {
+    this.$eventHub.$on("resetFilter", this.resetFilter);
+  },
+  beforeDestroy() {
+    this.$eventHub.$off("resetFilter", this.resetFilter);
+  },
   methods: {
-    changeFilter(type) { 
+    /**
+     * Event handler for filter changing
+     * @param {String} type name of a filter
+     */
+    changeFilter(type) {
       this.currentFilter = type;
       this.$eventHub.$emit("filterChanged", type);
     },
-    resetFilter(){
-        this.currentFilter = "";
+
+    /**
+     * Resets current filter
+     */
+    resetFilter() {
+      this.currentFilter = "";
     },
-    refresh(){
-        if(window.location.href === this.$homepage)
-            window.location.reload();
-        window.location.href = this.$homepage;
+
+    /**
+     * Returns to the first page with reloading
+     */
+    refresh() {
+      if (window.location.href === this.$homepage) window.location.reload();
+      window.location.href = this.$homepage;
     }
   }
 };
@@ -66,7 +97,6 @@ header {
   flex-wrap: wrap;
 }
 
-
 .header_link {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -77,10 +107,11 @@ header {
   padding: 10px;
   font-size: 22px;
   color: black;
-  cursor:pointer;
+  cursor: pointer;
 }
 
-.header_link:hover, .chosenLink {
+.header_link:hover,
+.chosenLink {
   color: red;
 }
 </style>

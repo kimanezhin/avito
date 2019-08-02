@@ -1,5 +1,5 @@
 <template>
-  <div class = "inner-table">
+  <div class="inner-table">
     <div class="empty-screen" v-if="isEmpty">К сожалению, здесь пока пусто:(</div>
     <transition-group v-else class="table" name="cards">
       <Ad
@@ -36,9 +36,13 @@ export default {
     };
   },
   methods: {
+    /**
+     * Event handler. Filters depends on a type
+     * @param {String} type Name of a filter
+     */
     onFilterChanged(type, from, to) {
       switch (type) {
-        case "id":
+        case "id": // sort by seller's rating
           this.sorter = (a, b) => {
             return (
               this.sellers.get(parseInt(a.relationships.seller)).rate -
@@ -47,14 +51,17 @@ export default {
           };
           this.itemList = this.itemList.sort(this.sorter);
           return;
-        case "price":
+
+        case "price": // Sort by price
           this.sorter = (a, b) => a.price - b.price;
           break;
-        case "range":
+
+        case "range": //Money range filter
           this.rangeFilter = a => a.price >= from && a.price <= to;
           this.itemList = this.constantList.filter(this.rangeFilter);
           break;
-        case "favourites":
+
+        case "favourites": //Filter by favourites
           let _ids = localStorage.getItem("favourites") || "";
           let ids = _ids.split(" ");
 
@@ -62,7 +69,9 @@ export default {
           this.currentCategory = "favourites";
           this.itemList = this.constantList.filter(this.filter);
           break;
+
         default:
+          //Default branch for all other filters(autos, laptops, immovable, etc.)
           this.currentCategory = type;
           this.filter = a => a.category === type;
           this.itemList = this.constantList
@@ -70,6 +79,7 @@ export default {
             .filter(this.rangeFilter);
           break;
       }
+
       this.itemList = this.itemList
         .filter(a => Number.isInteger(a.price))
         .sort(this.sorter)
@@ -84,15 +94,29 @@ export default {
           })
         );
     },
+
+    /**
+     * Resets filters to the initial.
+     */
     resetFilter() {
       this.sorter = (a, b) => a.id - b.id;
       this.filter = a => a;
       this.currentCategory = "";
       this.itemList = this.constantList.sort((a, b) => a.id - b.id);
     },
+
+    /**
+     * Function for adding sellers to the map
+     * @param {Object} seller Object with 2 fields: id, name
+     */
     addSeller(seller) {
       this.sellers.set(seller.id, seller);
     },
+
+    /**
+     * Event handler. Redraws item list, if current filter is "favourites"
+     *
+     */
     favouriteChecker() {
       if (this.currentCategory !== "favourites") return;
       this.onFilterChanged("favourites");
@@ -140,7 +164,7 @@ export default {
 }
 
 .card {
-  transition: all 1s;
+  transition: all 1.1s;
   display: inline-block;
   margin-right: 10px;
 }
@@ -152,9 +176,9 @@ export default {
   line-height: 10;
 }
 
-.inner-table{
-    width: 80%;
-    margin-left: auto;
-    margin-right: auto;
+.inner-table {
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
 }
 </style>

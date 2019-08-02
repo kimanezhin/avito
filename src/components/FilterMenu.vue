@@ -31,20 +31,34 @@
 export default {
   data() {
     return {
-      sortType: '',
+      sortType: "",
       from: "",
       to: ""
     };
   },
   methods: {
+    /**
+     *Changes sort type based on a param
+     * @param {String} type Name of a sort
+     * @emits filterChanged
+     */
     changeSortType(type) {
       this.sortType = type;
       this.$eventHub.$emit("filterChanged", type);
     },
+
+    /**
+     * Validates money range input
+     * @emits filterChanged
+     */
     setRange() {
-      if (this.from && this.to
-         && parseInt(this.from) <= parseInt(this.to) 
-         && parseInt(this.from) >= 0 && parseInt(this.to) > 0) {
+      if (
+        this.from &&
+        this.to &&
+        parseInt(this.from) <= parseInt(this.to) &&
+        parseInt(this.from) >= 0 &&
+        parseInt(this.to) > 0
+      ) {
         this.$eventHub.$emit("filterChanged", "range", this.from, this.to);
         document.getElementById("fromInput").style.border = "1px solid black";
         document.getElementById("toInput").style.border = "1px solid black";
@@ -59,10 +73,14 @@ export default {
         document.getElementById("toInput").style.border = "1px solid red";
       }
     },
+
+    /**
+     * Resets styles of filters
+     */
     resetFilters() {
       this.from = this.to = "";
       this.$eventHub.$emit("resetFilter");
-      this.sortType = '';
+      this.sortType = "";
     }
   }
 };
@@ -140,13 +158,13 @@ body {
   background: #009cf0;
   border-color: transparent;
 }
-@media screen and (max-width: 830px){
-    #right-panel{
-        height: 200px;
-        padding: 0;
-        width: 80%;
-        margin-left: auto;
-        margin-right: auto;
-    }
+@media screen and (max-width: 830px) {
+  #right-panel {
+    height: 200px;
+    padding: 0;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+  }
 }
 </style>

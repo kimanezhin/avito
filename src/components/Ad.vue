@@ -70,21 +70,32 @@ export default {
         rate: this.sellerRate
       });
     });
-    let favs = localStorage.getItem("favourites")|| ""
-    this.isFavourite = favs
-      .split(" ")
-      .includes(this.itemid + "");
+    let favs = localStorage.getItem("favourites") || "";
+    this.isFavourite = favs.split(" ").includes(this.itemid + "");
   },
   methods: {
+    /**
+     * Event handler. Changes opacity op a star/cross on a card.
+     * @param {Double} op Opacity
+     */
     changeOpacity(op) {
       document.getElementsByName(this.itemid)[0].style.opacity = op;
     },
+
+    /**
+     * Function that adds current card to the favourites
+     */
     addToFavourites() {
       this.isFavourite = true;
       let cur = localStorage.getItem("favourites") || "";
       cur += this.itemid + " ";
       localStorage.setItem("favourites", cur);
     },
+
+    /**
+     * Removes current card from favourites
+     * @emits favouritesChanged
+     */
     removeFromFavourites() {
       this.isFavourite = false;
       let cur = localStorage.getItem("favourites") || "";
@@ -95,6 +106,12 @@ export default {
       localStorage.setItem("favourites", cur);
       this.$eventHub.$emit("favouritesChanged");
     },
+
+    /**
+     * Makes string with price
+     * @param {String | Int} price Price
+     * @returns {String} String with price
+     */
     priceMaker(price) {
       if (!Number.isInteger(parseInt(price))) return "Не указано";
       price = price

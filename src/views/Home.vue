@@ -21,23 +21,23 @@ export default {
   },
   data() {
     return {
-      rightMenu:''
+      rightMenu: ""
     };
   },
   methods: {
+    /**
+     * Event handler. Shows and hides filter menu depends on a list length
+     * @param {Int} size current list size
+     */
     onListSizeChanged(size) {
-      if(!this.rightMenu)
-        return;
-      if (!size)
-        this.rightMenu.style.display = "none";
-      else
-        this.rightMenu.style.display = "initial";
-          
+      if (!this.rightMenu) return;
+      if (!size) this.rightMenu.style.display = "none";
+      else this.rightMenu.style.display = "initial";
     }
   },
   mounted() {
     this.rightMenu = document.getElementsByClassName("filterMenu")[0];
-  },
+  }
 };
 </script>
 <style scoped>
