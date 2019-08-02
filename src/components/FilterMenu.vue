@@ -5,20 +5,20 @@
       Сортировать:
       <div
         class="sort-button"
-        :class="{chosenType:isSortedByPopularity}"
+        :class="{chosenType:sortType === 'id'}"
         @click="changeSortType('id')"
       >по популярности</div>
       <div
         class="sort-button"
-        :class="{chosenType:!isSortedByPopularity}"
+        :class="{chosenType:sortType === 'price'}"
         @click="changeSortType('price')"
       >по цене</div>
     </div>
 
     <div class="price-filter">Цена, &#8381;</div>
     <div class="price-enter">
-      <input id="fromInput" v-model="from" type="text" placeholder="Цена от" />
-      <input id="toInput" v-model="to" type="text" placeholder="до, руб." />
+      <input id="fromInput" v-model="from" type="number" placeholder="Цена от" />
+      <input id="toInput" v-model="to" type="number" placeholder="до, руб." />
     </div>
     <div @click="resetFilters" class="reset-filters">сбросить фильтры</div>
     <button @click="setRange" class="btn-filter">
@@ -31,14 +31,14 @@
 export default {
   data() {
     return {
-      isSortedByPopularity: true,
+      sortType: '',
       from: "",
       to: ""
     };
   },
   methods: {
     changeSortType(type) {
-      this.isSortedByPopularity = type === "id" ? true : false;
+      this.sortType = type;
       this.$eventHub.$emit("filterChanged", type);
     },
     setRange() {
@@ -62,7 +62,7 @@ export default {
     resetFilters() {
       this.from = this.to = "";
       this.$eventHub.$emit("resetFilter");
-      this.isSortedByPopularity = true;
+      this.sortType = '';
     }
   }
 };

@@ -59,12 +59,17 @@ export default {
     },
     pictures: {
       type: Array
-    }
+    },
   },
   mounted() {
     Axios.get(this.$sellers + "/" + this.sellerid).then(response => {
       this.sellerName = response.data.data.name;
       this.sellerRate = response.data.data.rating;
+      this.$emit('sellerFound',{
+        id:this.sellerid,
+        name:this.sellerName,
+        rate:this.sellerRate
+      })
     });
     this.isFavourite = localStorage
                               .getItem('favourites')

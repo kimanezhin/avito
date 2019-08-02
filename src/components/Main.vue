@@ -9,6 +9,7 @@
         :price="item.price+''"
         :sellerid="parseInt(item.relationships.seller)"
         :pictures="item.pictures"
+        @sellerFound="addSeller"
       />
     </div>
   </div>
@@ -25,6 +26,7 @@ export default {
     return {
       itemList: [],
       constantList: [],
+      sellers:new Map,
       filter: a => a,
       currentCategory: "",
       sorter: (a, b) => a.id - b.id,
@@ -34,9 +36,13 @@ export default {
   methods: {
     onFilterChanged(type, from, to) {
       switch (type) {
-        case "id":
-          this.sorter = (a, b) => a.id - b.id;
-          break;
+        case "id":      
+          this.sorter = (a, b) => {
+             return  this.sellers.get(parseInt(a.relationships.seller)).rate - 
+                     this.sellers.get(parseInt(b.relationships.seller)).rate 
+          }
+          this.itemList = this.itemList.sort(this.sorter)
+          return;
         case "price":
           this.sorter = (a, b) => a.price - b.price;
           break;
@@ -52,7 +58,6 @@ export default {
             this.filter = a => ids.includes(a.id)
             this.currentCategory = "favourites"
             this.itemList = this.constantList.filter(this.filter)
-            this.itemList
             break;
         default:
           this.currentCategory = type;
@@ -78,14 +83,19 @@ export default {
       this.sorter = (a, b) => a.id - b.id;
       this.filter = a => a;
       this.currentCategory = "";
-      this.itemList = this.constantList;
+      this.itemList = this.itemList.sort((a,b) => a.id - b.id)
+    },
+    addSeller(seller){
+        this.sellers.set(seller.id,seller)
     }
   },
   mounted() {
-    Axios.get(this.$products).then(response => {
+    Axios
+    .get(this.$products)
+    .then(response => {
       this.itemList = response.data.data;
-      this.constantList = this.itemList;
-    });
+      this.constantList = this.itemList;})
+    
     this.$eventHub.$on("filterChanged", this.onFilterChanged);
     this.$eventHub.$on("resetFilter", this.resetFilter);
   },
