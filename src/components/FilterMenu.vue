@@ -140,4 +140,13 @@ body {
   background: #009cf0;
   border-color: transparent;
 }
+@media screen and (max-width: 830px){
+    #right-panel{
+        height: 200px;
+        padding: 0;
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
 </style>

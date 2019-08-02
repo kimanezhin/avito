@@ -43,11 +43,12 @@ export default {
 
 <style scoped>
 header {
-  height: 100px;
+  min-height: 100px;
   width: 100%;
   display: flex;
   flex-direction: row;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .logo {
@@ -60,9 +61,11 @@ header {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  width: 30%;
+  /* width: 30%; */
   margin-left: 5%;
+  flex-wrap: wrap;
 }
+
 
 .header_link {
   font-family: "Avenir", Helvetica, Arial, sans-serif;

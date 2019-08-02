@@ -1,7 +1,6 @@
 <template>
   <div>
     <div class="shop-card" @mouseover="changeOpacity(0.5)" @mouseleave="changeOpacity(0)">
-      
       <img
         v-if="!isFavourite"
         title="Добавить в избранное"
@@ -11,12 +10,12 @@
         src="../assets/star_77949.svg"
       />
       <img
-      v-else
-      title="Удалить из избранного"
-      :name="itemid"
-      @click="removeFromFavourites"
-      class="favourite"
-      src="../assets/cross.svg"
+        v-else
+        title="Удалить из избранного"
+        :name="itemid"
+        @click="removeFromFavourites"
+        class="favourite"
+        src="../assets/cross.svg"
       />
       <div class="container">
         <img class="ad-photo" :src="pictures[0]" />
@@ -59,22 +58,22 @@ export default {
     },
     pictures: {
       type: Array
-    },
+    }
   },
   mounted() {
     Axios.get(this.$sellers + "/" + this.sellerid).then(response => {
       this.sellerName = response.data.data.name;
       this.sellerRate = response.data.data.rating;
-      this.$emit('sellerFound',{
-        id:this.sellerid,
-        name:this.sellerName,
-        rate:this.sellerRate
-      })
+      this.$emit("sellerFound", {
+        id: this.sellerid,
+        name: this.sellerName,
+        rate: this.sellerRate
+      });
     });
     this.isFavourite = localStorage
-                              .getItem('favourites')
-                              .split('')
-                              .includes(this.itemid+"")
+      .getItem("favourites")
+      .split("")
+      .includes(this.itemid + "");
   },
   methods: {
     changeOpacity(op) {
@@ -82,19 +81,19 @@ export default {
     },
     addToFavourites() {
       this.isFavourite = true;
-      let cur = localStorage.getItem('favourites')
-      cur+=this.itemid;
-      localStorage.setItem('favourites', cur);
+      let cur = localStorage.getItem("favourites");
+      cur += this.itemid;
+      localStorage.setItem("favourites", cur);
     },
-    removeFromFavourites(){
+    removeFromFavourites() {
       this.isFavourite = false;
-      let cur = localStorage.getItem('favourites')
+      let cur = localStorage.getItem("favourites");
       cur = cur
-      .split('')
-      .filter(x=>parseInt(x)!==this.itemid)
-      .join('')
-      localStorage.setItem('favourites',cur);
-      this.$eventHub.$emit('favouritesChanged')
+        .split("")
+        .filter(x => parseInt(x) !== this.itemid)
+        .join("");
+      localStorage.setItem("favourites", cur);
+      this.$eventHub.$emit("favouritesChanged");
     },
     priceMaker(price) {
       if (!Number.isInteger(parseInt(price))) return "Не указано";
@@ -114,17 +113,16 @@ export default {
     return {
       sellerName: "",
       sellerRate: 0,
-      isFavourite:false
+      isFavourite: false
     };
-  },
+  }
 };
 </script>
 
 <style scoped>
 .shop-card {
   position: relative;
-  width: 350px;
-  /* height: 350px; */
+  max-width: 350px;
   background: #f5f5f5;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
   overflow: hidden;
@@ -132,6 +130,12 @@ export default {
   margin: 50px;
   display: flex;
   flex-direction: column;
+  transition: all 0.3s ease;
+}
+
+.shop-card:hover {
+  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.35);
+  transition: all 0.3s ease;
 }
 
 .favourite {

@@ -1,7 +1,11 @@
 <template>
   <div style="width: 80%;">
-    <div class="table">
+      <div class="empty-screen" v-if="isEmpty">
+          К сожалению, здесь пока пусто:(
+      </div>
+    <transition-group v-else class="table" name="cards">
       <Ad
+        class="card"
         v-for="item in itemList"
         :key="item.id"
         :itemid="parseInt(item.id)"
@@ -11,7 +15,7 @@
         :pictures="item.pictures"
         @sellerFound="addSeller"
       />
-    </div>
+    </transition-group>
   </div>
 </template>
 
@@ -91,9 +95,8 @@ export default {
       this.sellers.set(seller.id, seller);
     },
     favouriteChecker() {
-        if(this.currentCategory !== "favourites")
-            return;
-        this.onFilterChanged('favourites')
+      if (this.currentCategory !== "favourites") return;
+      this.onFilterChanged("favourites");
     }
   },
   mounted() {
@@ -110,7 +113,13 @@ export default {
     this.$eventHub.$on("favouritesChanged", this.favouriteChecker);
     this.$eventHub.$off("resetFilter", this.resetFilter);
     this.$eventHub.$off("filterChanged", this.onFilterChanged);
-  }
+  },
+  computed: {
+    isEmpty(){
+        this.$emit('listSizeChanged', this.itemList.length)
+        return !this.itemList.length;
+    }  
+  },
 };
 </script>
 <style scoped>
@@ -119,5 +128,27 @@ export default {
   flex-direction: row;
   overflow: none;
   flex-wrap: wrap;
+}
+
+.cards-enter,
+.cards-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
+}
+.cards-leave-active {
+  position: absolute;
+}
+
+.card {
+  transition: all 1s;
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.empty-screen{
+    font-size: 30px;
+    text-align: center;
+    font-weight: 600;
+    line-height: 10;
 }
 </style>

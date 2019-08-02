@@ -2,8 +2,8 @@
   <div>
     <Header />
     <div id="main">
-      <Main />
-      <FilterMenu/>
+      <Main @listSizeChanged="onListSizeChanged"/>
+      <FilterMenu v-if="isNotEmpty"/>
     </div>
   </div>
 </template>
@@ -19,10 +19,26 @@ export default {
     Main,
     FilterMenu
   },
+  data() {
+    return {
+      isNotEmpty:false
+    }
+  },
+  methods: {
+    onListSizeChanged(size){
+      this.isNotEmpty = !!size;
+    }
+  },
 };
 </script>
 <style scoped>
 #main{
   display: flex;
+}
+
+@media screen and (max-width: 830px) {
+ #main{
+   flex-direction: column-reverse;
+ }   
 }
 </style>
