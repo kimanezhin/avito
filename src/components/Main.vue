@@ -1,8 +1,6 @@
 <template>
   <div style="width: 80%;">
-      <div class="empty-screen" v-if="isEmpty">
-          К сожалению, здесь пока пусто:(
-      </div>
+    <div class="empty-screen" v-if="isEmpty">К сожалению, здесь пока пусто:(</div>
     <transition-group v-else class="table" name="cards">
       <Ad
         class="card"
@@ -57,7 +55,8 @@ export default {
           this.itemList = this.constantList.filter(this.rangeFilter);
           break;
         case "favourites":
-          let ids = localStorage.getItem("favourites").split("");
+          let _ids = localStorage.getItem("favourites") || "";
+          let ids = _ids.split(" ");
 
           this.filter = a => ids.includes(a.id);
           this.currentCategory = "favourites";
@@ -115,11 +114,11 @@ export default {
     this.$eventHub.$off("filterChanged", this.onFilterChanged);
   },
   computed: {
-    isEmpty(){
-        this.$emit('listSizeChanged', this.itemList.length)
-        return !this.itemList.length;
-    }  
-  },
+    isEmpty() {
+      this.$emit("listSizeChanged", this.itemList.length);
+      return !this.itemList.length;
+    }
+  }
 };
 </script>
 <style scoped>
@@ -145,10 +144,10 @@ export default {
   margin-right: 10px;
 }
 
-.empty-screen{
-    font-size: 30px;
-    text-align: center;
-    font-weight: 600;
-    line-height: 10;
+.empty-screen {
+  font-size: 30px;
+  text-align: center;
+  font-weight: 600;
+  line-height: 10;
 }
 </style>

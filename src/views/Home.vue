@@ -26,11 +26,13 @@ export default {
   },
   methods: {
     onListSizeChanged(size) {
+      if(!this.rightMenu)
+        return;
       if (!size)
         this.rightMenu.style.display = "none";
       else
-        this.rightMenu.style.display =
-          "initial";
+        this.rightMenu.style.display = "initial";
+          
     }
   },
   mounted() {

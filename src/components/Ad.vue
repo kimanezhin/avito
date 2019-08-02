@@ -70,9 +70,9 @@ export default {
         rate: this.sellerRate
       });
     });
-    this.isFavourite = localStorage
-      .getItem("favourites")
-      .split("")
+    let favs = localStorage.getItem("favourites")|| ""
+    this.isFavourite = favs
+      .split(" ")
       .includes(this.itemid + "");
   },
   methods: {
@@ -81,17 +81,17 @@ export default {
     },
     addToFavourites() {
       this.isFavourite = true;
-      let cur = localStorage.getItem("favourites");
-      cur += this.itemid;
+      let cur = localStorage.getItem("favourites") || "";
+      cur += this.itemid + " ";
       localStorage.setItem("favourites", cur);
     },
     removeFromFavourites() {
       this.isFavourite = false;
-      let cur = localStorage.getItem("favourites");
+      let cur = localStorage.getItem("favourites") || "";
       cur = cur
-        .split("")
+        .split(" ")
         .filter(x => parseInt(x) !== this.itemid)
-        .join("");
+        .join(" ");
       localStorage.setItem("favourites", cur);
       this.$eventHub.$emit("favouritesChanged");
     },
